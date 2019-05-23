@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
+
   import { FIREBASE_BASE_URL } from "./constants";
+  import hobbyStore from "./hobby-store.js";
   let hobbies = [];
   let loading = false;
   let hobbyInput;
@@ -13,14 +15,13 @@
       return res.json();
     })
     .then(data => {
-      return (hobbies = Object.values(data));
+      hobbyStore.setHobbies(Object.values(data));
     })
     .catch(err => {
       console.log(err);
     });
 
   function addHobby() {
-    hobbies = [...hobbies, hobbyInput.value];
     loading = true;
     fetch(`${FIREBASE_BASE_URL}hobbies.json`, {
       method: "POST",
@@ -34,6 +35,7 @@
         if (!res.ok) {
           throw new Error("falid");
         }
+        hobbyStore.addHobby(hobbyInput.value);
       })
       .catch(err => {
         loading = false;
@@ -55,7 +57,7 @@
   <strong>Loading...</strong>
 {:else}
   <ul>
-    {#each hobbies as hobby (hobby)}
+    {#each $hobbyStore as hobby (hobby)}
       <li>{hobby}</li>
     {/each}
   </ul>
