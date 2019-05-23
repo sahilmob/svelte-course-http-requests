@@ -5,21 +5,20 @@
   let loading = false;
   let hobbyInput;
 
-  onMount(() => {
-    fetch(`${FIREBASE_BASE_URL}hobbies.json`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error("falid");
-        }
-        return res.json();
-      })
-      .then(data => {
-        hobbies = Object.values(data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  });
+  let getHobbies = fetch(`${FIREBASE_BASE_URL}hobbies.json`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("falid");
+      }
+      return res.json();
+    })
+    .then(data => {
+      return (hobbies = Object.values(data));
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
   function addHobby() {
     hobbies = [...hobbies, hobbyInput.value];
     loading = true;
@@ -51,6 +50,7 @@
 <input bind:this={hobbyInput} type="text" id="hobby" />
 <button on:click={addHobby}>Add Hobby</button>
 <br />
+
 {#if loading}
   <strong>Loading...</strong>
 {:else}
@@ -60,3 +60,14 @@
     {/each}
   </ul>
 {/if}
+<!-- {#await getHobbies}
+  Loading...
+{:then hobbyData}
+  <ul>
+    {#each hobbyData as hobby (hobby)}
+      <li>{hobby}</li>
+    {/each}
+  </ul>
+{:catch err}
+   {err.message}
+{/await} -->
