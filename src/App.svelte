@@ -1,23 +1,25 @@
 <script>
+  import { onMount } from "svelte";
   import { FIREBASE_BASE_URL } from "./constants";
   let hobbies = [];
   let loading = false;
   let hobbyInput;
 
-  fetch(`${FIREBASE_BASE_URL}hobbies.json`)
-    .then(res => {
-      if (!res.ok) {
-        throw new Error("falid");
-      }
-      return res.json();
-    })
-    .then(data => {
-      hobbies = Object.values(data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
+  onMount(() => {
+    fetch(`${FIREBASE_BASE_URL}hobbies.json`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("falid");
+        }
+        return res.json();
+      })
+      .then(data => {
+        hobbies = Object.values(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
   function addHobby() {
     hobbies = [...hobbies, hobbyInput.value];
     loading = true;
